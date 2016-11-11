@@ -74,11 +74,11 @@ function DoTFPlot(t,f,y)
 
 figure,
 nc = size(y,2);
-ha = tight_subplot(2,nc/2,[.01 .03],[.1 .01],[.01 .01]);
+%ha = tight_subplot(2,nc/2,[.01 .03],[.1 .01],[.01 .01]);
 
 for i = 1:nc
-    axes(ha(i)),
-    %subplot(2,nc/2,i),
+    %axes(ha(i)),
+    subplot(2,nc/2,i),
     M = max(y(:));
     plotbert(t,f,squeeze(mean(y(:,i,:,:),1))',M,['Condition ',num2str(i)]);
     set(gcf,'inverthardcopy','off');
