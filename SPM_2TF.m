@@ -7,6 +7,7 @@ function [F,T,Y,FT] = SPM_2TF(D,cfg)
 % cfg.freqs    = frequency vector, eg. 1:.25:100
 % cfg.baseline = do baselining [0/1]
 % cfg.basetime = start / stop in secs, eg. [-.1 1]
+% cfg.type     = 'evoked' or 'induced'
 % cfg.compute  = {'abs','pow','phase','complex','plv'}
 %
 % AS
@@ -18,7 +19,7 @@ if isfield(cfg,'freqs');   Freqs= cfg.freqs;   else Freqs= 1;        end
 
 if isfield(cfg,'baseline');bl   = cfg.baseline;else bl   = 0;        end
 if isfield(cfg,'basetime');bs   = cfg.basetime;else bs   = [-.1 .1]; end
-
+if isfield(cfg,'type'    );type = cfg.type;    else type = 'evoked'; end
 
 % foi
 if length(Freqs) == 1;
@@ -54,6 +55,11 @@ cfg.fsample = FS*rs;       % adjusted sample rate
 t           = linspace(t(1), t(end),rs*length(t));
 smooth      = 4;
 
+switch type
+    case lower('evoked') ; TF = 'evagram'; fprintf('Calculating evoked\n');
+    case lower('induced'); TF = 'agram';   fprintf('Calculating induced\n');
+end
+
 for i = 1:nc
     Yc = D(:,:,ic{i});
     cfg.sampletimes  = t;
@@ -69,7 +75,7 @@ for i = 1:nc
             YY   = HighResMeanFilt(full(Yc),rs,smooth);
             TF_Y = eig_engine(YY,cfg,Freqs);
 
-            Y{i} = double(TF_Y.evagram);
+            Y{i} = double(TF_Y.(TF));
             F{i} = TF_Y.freqs;
             T{i} = TF_Y.sampletimes;
             
@@ -78,7 +84,7 @@ for i = 1:nc
             YY   = mean(YY);
             TF_Y = bert_singlechannel([YY;YY],cfg,Freqs);
             
-            Y{i} = double(TF_Y.evagram);
+            Y{i} = double(TF_Y.(TF));
             F{i} = TF_Y.freqs;
             T{i} = TF_Y.sampletimes;
         
@@ -95,7 +101,7 @@ for i = 1:nc
                 TF_Y = bert_singlechannel([YY;YY],cfg,Freqs);
                 
                 %Y = double(TF_Y.agram); % real
-                Y{i,j} = double(TF_Y.evagram);
+                Y{i,j} = double(TF_Y.(TF));
                 
                 F{i,j} = TF_Y.freqs;
                 T{i,j} = TF_Y.sampletimes;

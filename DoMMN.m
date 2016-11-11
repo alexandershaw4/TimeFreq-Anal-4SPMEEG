@@ -6,7 +6,8 @@ function [MMN,t,F,T,Y] = DoMMN(f,cfg)
 %
 %
 
-try cfg; catch; cfg = []; end
+try cfg;             catch; cfg= []; end
+if ~isfield(cfg,'MMN'); cfg.MMN = 0; end
 
 for i = 1:length(f)
     D = spm_eeg_load(f{i});

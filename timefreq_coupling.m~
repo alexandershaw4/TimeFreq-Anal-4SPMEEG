@@ -18,6 +18,13 @@ function cfc = timefreq_coupling(f,cfg)
 %
 
 
+
+%cd /Volumes/Extra/Rov/
+%addpath('../');
+%f = dir('mTrialsSixSens_*.mat');
+%f = dir('Mmica_*.mat');
+%f = {f.name}';
+
 try cfg; catch; cfg = []; end
 
 [MMN,t,F,T,Y] = DoMMN(f,cfg);
@@ -70,8 +77,6 @@ return
 end
 
 function DoTFPlot(t,f,y)
-% plot time frequency averaged over group
-
 figure,
 nc = size(y,2);
 ha = tight_subplot(2,nc/2,[.01 .03],[.1 .01],[.01 .01]);
@@ -87,9 +92,9 @@ end
 end
 
 function DoCFCPlot(r,f)
-% plot correlation coefficients 
 
 n = length(r);
+%ha = tight_subplot(2,round(n/2),[.01 .03],[.1 .01],[.01 .01]);
 figure,
 
 k = round(length(f)*.015);
@@ -97,6 +102,7 @@ h = @(x)HighResMeanFilt(x,1,k);
 fprintf('smoothing with kern of %d\n',k);
 
 for i = 1:n
+    %axes(ha(i));
     subplot(2,round(n/2),i),
     imagesc(h(r{i}));
     set(gca,'YDir','normal');
@@ -116,9 +122,9 @@ set(gcf,'inverthardcopy','off');
 end
 
 function DoCFCPlot_p(p,f)
-% plot p-values thresholded to <.1, otherwise dark blue
 
 n = length(p);
+%ha = tight_subplot(2,round(n/2),[.01 .03],[.1 .01],[.01 .01]);
 figure,
 
 k = round(length(f)*.015);
@@ -126,12 +132,13 @@ h = @(x)HighResMeanFilt(x,1,k);
 fprintf('smoothing with kern of %d\n',k);
 
 for i = 1:n
+    %axes(ha(i));
     subplot(2,round(n/2),i),
     A = (p{i});
     A(A>.1) = inf;
     imagesc(h(A));
     caxis([0 .1])
-
+    %colormap gray
     colormap(flipud(jet))
     
     set(gca,'YDir','normal');
