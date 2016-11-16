@@ -1,54 +1,33 @@
-function [MMN,t,F,T,Y] = DoMMN(f,cfg)
-% Called by timefreq_coupling
-% Calls SPM_2TF
-%
-% Calculates MMN for roving paradigm
-%
-%
+function [MMN,t] = DoMMN(f,cfg)
+
 
 try cfg;             catch; cfg= []; end
 if ~isfield(cfg,'MMN'); cfg.MMN = 0; end
 
 for i = 1:length(f)
-    D = spm_eeg_load(f{i});
-    [Data,time,F{i},T{i},Y{i}] = MakeMMN(D,cfg);
+    Y = cfg.Y(i,:);
+    T = cfg.T(i,:);
+    [Data,time] = MakeMMN(Y,T);
+
+    MMN{i,:} = Data;
+    T{i}     = time;
     
-    if cfg.MMN;
-        MMN{i,:} = Data;
-        T{i}     = time;
-    end
 end
 
-if cfg.MMN;
-    MMN = squeeze(cat(3,MMN{:}));
-    t   = T{i};
-    DoPlots(MMN,t);
-else
-    MMN = [];
-    t   = T{i}{1};
-end
+MMN = squeeze(cat(3,MMN{:}));
+t   = T{i};
+DoPlots(MMN,t);
 
 end
 
-function [MMN,time,F,T,Y] = MakeMMN(D,cfg)
 
-try cfg.freqs;    catch; cfg.freqs = 1:.25:60; end
-try cfg.sensors;  catch; cfg.sensors  = 'pca'; end
-try cfg.baseline; catch; cfg.baseline = 1;     end
 
-[F,T,Y] = SPM_2TF(D,cfg);  clc;
+function [MMN,time] = MakeMMN(Y,T)
 
-MMN{1}  = PEig(Y{1}'-Y{2}');
-MMN{2}  = PEig(Y{2}'-Y{3}');
-MMN{3}  = PEig(Y{3}'-Y{4}');
-MMN{4}  = PEig(Y{4}'-Y{5}');
-MMN{5}  = PEig(Y{5}'-Y{6}');
-MMN{6}  = PEig(Y{6}'-Y{7}');
-MMN{7}  = PEig(Y{7}'-Y{8}');
-MMN{8}  = PEig(Y{8}'-Y{9}');
-MMN{9}  = PEig(Y{9}'-Y{10}');
-
-time = T{1};
+for i = 1:length(Y)-1
+    MMN{i}  = PEig(abs(Y{i}')-abs(Y{i+1}'));
+    time    = T{1};
+end
 
 end
 
