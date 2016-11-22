@@ -466,8 +466,11 @@ end
 
 %The main loop is frequency
 for m = 1 : NFreqs
-    fprintf('Computing frequency %d of %d \n', m, NFreqs);
-    fprintf('[computing %s statistic]\n',compute);
+    if m > 1; fprintf(repmat('\b',size(str))); end
+    str = sprintf('Computing frequency %d of %d \n', m, NFreqs);
+    fprintf(str);
+    %fprintf('Computing frequency %d of %d \n', m, NFreqs);
+    %fprintf('[computing %s statistic]\n',compute);
     %Design the filter coefficients 
     [B, A] = mk_filter(Fs,hpHz(m), lpHz(m), FilterOrder);
        for n = 1 : NEpochs
