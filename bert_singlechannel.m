@@ -257,7 +257,7 @@ if isfield(cfg, 'venumber') == 1
     fprintf('Analysing channel %d in the data\n', venumber);
 else
     venumber = 1;
-    fprintf('No venumber was specfied so analysing the first channel in the data\n');
+    %fprintf('No venumber was specfied so analysing the first channel in the data\n');
 end
 
 %Sort the Data out
@@ -304,7 +304,7 @@ end
 %Sort Out the Baselining
 if isfield(cfg, 'baseline') == 0
     baseline = 'relchange';
-    fprintf('Using a relative baseline as default\n');
+    %fprintf('Using a relative baseline as default\n');
 else
     baseline = cfg.baseline; 
 end
@@ -353,13 +353,13 @@ end
 %What statistic are we goint to compute
 if isfield(cfg, 'compute') == 0
     compute = 'abs';
-    fprintf('Computing the absolute value of the Hilbert trace by default\n');
+    %fprintf('Computing the absolute value of the Hilbert trace by default\n');
 else
     compute = cfg.compute;
 end
 if isfield(cfg, 'central') == 0
     central = 'mean';
-    fprintf('Computing the mean value of computation variable by default\n');
+    %fprintf('Computing the mean value of computation variable by default\n');
 else
     central = cfg.central;
 end
@@ -411,7 +411,7 @@ else
            base_end_time = sampletimes(100);
            base_end = 100;
         end
-       fprintf('Using the baseline period of samples %d to %d\n',base_start, base_end );
+       %fprintf('Using the baseline period of samples %d to %d\n',base_start, base_end );
     end
 end
 %%%%%%%%%%%%%%%%
@@ -466,9 +466,10 @@ end
 
 %The main loop is frequency
 for m = 1 : NFreqs
-    if m > 1; fprintf(repmat('\b',size(str))); end
-    str = sprintf('Computing frequency %d of %d \n', m, NFreqs);
-    fprintf(str);
+    %if m > 1; fprintf(repmat('\b',size(str))); end
+    %str = sprintf('Computing frequency %d of %d \n', m, NFreqs);
+    %fprintf(str);
+    
     %fprintf('Computing frequency %d of %d \n', m, NFreqs);
     %fprintf('[computing %s statistic]\n',compute);
     %Design the filter coefficients 
@@ -770,7 +771,7 @@ if NEpochs > 1
 end
 
 
-fprintf('bert_singlechannel complete\n');
+%fprintf('bert_singlechannel complete\n');
 %All done!
 
 %%%%%%%%%%%%%%%%%%%%%%
